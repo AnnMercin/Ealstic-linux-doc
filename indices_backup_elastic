@@ -1,0 +1,48 @@
+--------------------------------------------------------------------------------------------------------------------
+Please Note 
+
+159.65.90.196:9200 -----> Elastic Host
+
+article-----------------> Index Name
+
+article_backup_190124---> Clone Index Name 'Or' Backup Index Name
+-------------------------------------------------------------------------------------------------------------------
+
+*************************************(First, enable write access for the index)****************************************
+
+curl --location --request PUT '159.65.90.196:9200/article/_settings' --header 'Content-Type: application/json' --data '{
+
+    "settings": {
+
+        "index.blocks.write": true
+
+    }
+
+}'
+ 
+**************************************(Second, take a clone 'or' backup)***********************************************
+
+curl --location --request POST '159.65.90.196:9200/article/_clone/article_backup_190124'
+ 
+ 
+curl --location --request PUT '159.65.90.196:9200/article_backup_190124/_settings' --header 'Content-Type: application/json' --data '{
+
+    "settings": {
+
+        "index.blocks.write": false
+
+    }
+
+}'
+ 
+************************************(Third, disable write access for both indices)***********************************************
+
+curl --location --request PUT '159.65.90.196:9200/article/_settings' --header 'Content-Type: application/json' --data '{
+
+    "settings": {
+
+        "index.blocks.write": false
+
+    }
+
+}'
